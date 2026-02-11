@@ -45,23 +45,79 @@ and detects similarity using <strong>OCR + semantic embeddings</strong>.
 assignment_similarity_system/
 │
 ├── api/
-│   ├── main.py
-│   └── core/
-│       ├── utils.py
-│       ├── config.py
-│       └── database.py
+│   ├── __pycache__/
+│   ├── main.py                 # FastAPI entry point
+│   ├── dashboard.py            # Dashboard-related APIs
+│   │
+│   ├── core/
+│   │   ├── __pycache__/
+│   │   ├── config.py           # App configuration
+│   │   ├── database.py         # SQLite database setup
+│   │   └── utils.py            # Common helper functions
+│   │
+│   ├── features/               # Similarity engines
+│   │   ├── content_similarity.py
+│   │   ├── semantic_similarity.py
+│   │   ├── structure_similarity.py
+│   │   ├── metadata_similarity.py
+│   │   ├── stylometry_similarity.py
+│   │   ├── text_similarity.py
+│   │   └── weighting.py        # Weighted final score
+│
+├── ocr/
+│   ├── __pycache__/
+│   ├── doc_reader.py           # DOC/PDF text extraction
+│   ├── file_reader.py          # File handling utilities
+│   └── pdf_reader.py           # OCR + PDF parsing
+│
+├── preprocessing/
+│   ├── __pycache__/
+│   └── text_cleaner.py         # Text normalization & cleanup
+│
+├── scoring/
+│   ├── __pycache__/
+│   └── weighted_score.py       # Risk calculation logic
+│
+├── storage/
+│   └── similarity_results.db   # SQLite database
 │
 ├── frontend/
+│   ├── node_modules/
+│   ├── public/
+│   │   └── vite.svg
+│   │
 │   ├── src/
+│   │   ├── assets/
+│   │   │   └── react.svg
+│   │   │
 │   │   ├── components/
+│   │   │   ├── FileUpload.jsx
+│   │   │   ├── Navbar.jsx
+│   │   │   ├── RiskBadge.jsx
+│   │   │   └── SimilarityMatrix.jsx
+│   │   │
 │   │   ├── pages/
+│   │   │   └── Dashboard.jsx
+│   │   │
 │   │   ├── services/
+│   │   │   └── api.js           # Backend API calls
+│   │   │
 │   │   ├── App.jsx
-│   │   └── index.css
-│   └── public/
+│   │   ├── App.css
+│   │   ├── index.css
+│   │   └── main.jsx
+│   │
+│   ├── index.html
+│   ├── package.json
+│   ├── package-lock.json
+│   ├── postcss.config.js
+│   ├── tailwind.config.js
+│   └── vite.config.js
 │
-├── requirements.txt
-└── README.md
+├── .gitignore
+├── README.md
+└── requirements.txt
+
 </pre>
 
 <hr/>
