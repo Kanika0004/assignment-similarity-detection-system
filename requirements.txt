@@ -1,0 +1,17 @@
+fastapi
+uvicorn
+streamlit
+pandas
+numpy
+scikit-learn
+sentence-transformers
+nltk
+pdfplumber
+pytesseract
+pdf2image
+python-docx
+pillow
+opencv-python
+sqlalchemy
+matplotlib
+seaborn
