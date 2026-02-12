@@ -30,10 +30,10 @@ export default function App() {
         const r = data.comparisons[0];
         setResult({
           score: r.similarity + "%",
-          risk: r.interpretation,
-          type: r.interpretation.includes("Highly")
+          risk: r.risk,
+          type: r.risk.includes("Highly")
             ? "high"
-            : r.interpretation.includes("Moderately")
+            : r.risk.includes("Moderately")
             ? "medium"
             : "low"
         });

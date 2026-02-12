@@ -1,9 +1,3 @@
-import axios from "axios";
-
-const API = axios.create({
-  baseURL: "http://127.0.0.1:8000",
-});
-
 export const compareAssignments = async (files) => {
   const formData = new FormData();
 
@@ -11,11 +5,14 @@ export const compareAssignments = async (files) => {
     formData.append("files", file);
   });
 
-  const response = await API.post("/compare", formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
+  const response = await fetch("http://127.0.0.1:8000/compare", {
+    method: "POST",
+    body: formData,
   });
 
-  return response.data;
+  if (!response.ok) {
+    throw new Error("Backend error");
+  }
+
+  return response.json();
 };

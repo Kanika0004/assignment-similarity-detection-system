@@ -2,8 +2,8 @@ import pdfplumber
 import pytesseract
 from docx import Document
 import io
-from preprocessing.text_cleaner import clean_text
-from core.config import TEXT_THRESHOLD_FOR_OCR
+from ..preprocessing.text_cleaner import clean_text
+from ..core.config import TEXT_THRESHOLD_FOR_OCR
 
 
 # -----------------------------
