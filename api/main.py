@@ -1,13 +1,17 @@
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from features.semantic_similarity import semantic_similarity
+
+
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
-from sentence_transformers import SentenceTransformer
-from sklearn.metrics.pairwise import cosine_similarity
+
 import pdfplumber
 import pytesseract
 from PIL import Image
 import io
-import numpy as np
 from typing import List
 
 # ---------------------------------
@@ -29,11 +33,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# ---------------------------------
-# Load AI Model Once
-# ---------------------------------
-model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
 
 # ---------------------------------
 # OCR + PDF Text Extraction
@@ -119,11 +118,7 @@ async def compare_assignments(
             }
         )
 
-    # Generate embeddings
-    embeddings = model.encode(texts)
-
-    # Similarity matrix
-    similarity_matrix = cosine_similarity(embeddings)
+    similarity_matrix = semantic_similarity(texts)
 
     results = []
 

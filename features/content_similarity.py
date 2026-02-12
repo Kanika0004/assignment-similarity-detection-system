@@ -1,7 +1,12 @@
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
+# ✅ Create once
+vectorizer = TfidfVectorizer(stop_words="english")
+
+
 def content_similarity(texts):
-    vectorizer = TfidfVectorizer(stop_words="english")
     tfidf = vectorizer.fit_transform(texts)
-    return cosine_similarity(tfidf)
+    similarity_matrix = cosine_similarity(tfidf)
+
+    return similarity_matrix
