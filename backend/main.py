@@ -68,7 +68,7 @@ async def compare_assignments(files: List[UploadFile] = File(...)):
 
     # -------- COMPUTE SIMILARITY --------
     try:
-        similarity_matrix, breakdown = compute_weighted_similarity(texts, metadata)
+        similarity_matrix, breakdown = compute_weighted_similarity(texts, metadata, filenames)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Similarity error: {str(e)}")
 

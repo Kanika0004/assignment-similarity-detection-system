@@ -7,12 +7,30 @@ from ..features.stylometry_similarity import stylometry_similarity
 from ..features.metadata_similarity import metadata_similarity
 
 
-def compute_weighted_similarity(texts, metadata):
+def compute_weighted_similarity(texts, metadata, filenames):
+    n = len(texts)
+
     content_sim = content_similarity(texts)
     semantic_sim = semantic_similarity(texts)
     structure_sim = structure_similarity(texts)
     stylometry_sim = stylometry_similarity(texts)
-    metadata_sim = metadata_similarity(metadata)
+    metadata_sim = metadata_similarity(metadata, filenames)  # ✅ FIX
+
+    def ensure_square(mat):
+        mat = np.array(mat)
+        if mat.shape != (n, n):
+            fixed = np.zeros((n, n), dtype=float)
+            for i in range(min(n, mat.shape[0])):
+                for j in range(min(n, mat.shape[1])):
+                    fixed[i][j] = mat[i][j]
+            return fixed
+        return mat
+
+    content_sim = ensure_square(content_sim)
+    semantic_sim = ensure_square(semantic_sim)
+    structure_sim = ensure_square(structure_sim)
+    stylometry_sim = ensure_square(stylometry_sim)
+    metadata_sim = ensure_square(metadata_sim)
 
     weights = SIMILARITY_WEIGHTS
 
