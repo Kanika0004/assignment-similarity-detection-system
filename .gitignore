@@ -13,4 +13,10 @@ frontend/node_modules/
 .DS_Store
 Thumbs.db
 
+<<<<<<< HEAD
 *.db
+=======
+# Database files
+*.db
+backend/storage/*.db
+>>>>>>> 95d31da (Remove database from tracking and update similarity logic)

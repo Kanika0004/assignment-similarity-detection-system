@@ -36,9 +36,9 @@ export default function App() {
       : "low";
 
   const getColorClass = (value) => {
-    if (value >= 80) return "risk-high";
-    if (value >= 50) return "risk-medium";
-    return "risk-low";
+    if (value >= 80) return "high";
+    if (value >= 50) return "medium";
+    return "low";
   };
 
   const getInterpretation = (breakdown, risk) => {
@@ -46,19 +46,19 @@ export default function App() {
 
     if (breakdown.stylometry >= 85) {
       notes.push(
-        "Writing style similarity is very high, suggesting the same author or strong stylistic influence.",
+        "Writing style similarity is very high, suggesting the same author or strong stylistic influence."
       );
     }
 
     if (breakdown.semantic >= 70 && breakdown.semantic > breakdown.content) {
       notes.push(
-        "Semantic similarity exceeds direct content overlap, indicating paraphrasing rather than copy-paste.",
+        "Semantic similarity exceeds direct content overlap, indicating paraphrasing rather than copy-paste."
       );
     }
 
     if (breakdown.metadata < 50) {
       notes.push(
-        "Low metadata similarity reduces the likelihood of direct document reuse.",
+        "Low metadata similarity reduces the likelihood of direct document reuse."
       );
     }
 
@@ -112,7 +112,9 @@ export default function App() {
                 <div className="muted">Overall Similarity</div>
               </div>
 
-              <span className={`risk-badge ${riskClass}`}>{result.risk}</span>
+              <span className={`risk-badge ${riskClass}`}>
+                {result.risk}
+              </span>
             </div>
 
             <hr />
@@ -141,18 +143,28 @@ export default function App() {
 
           {/* Interpretation Card */}
           <div className="card interpretation-card">
-            <h3 className="interpretation-title">Plagiarism Interpretation</h3>
+            <h3 className="interpretation-title">
+              Plagiarism Interpretation
+            </h3>
 
             <ul className="interpretation-list">
-              {getInterpretation(result.breakdown, result.risk).notes.map(
-                (note, index) => (
-                  <li key={index}>{note}</li>
-                ),
-              )}
+              {getInterpretation(
+                result.breakdown,
+                result.risk
+              ).notes.map((note, index) => (
+                <li key={index}>{note}</li>
+              ))}
             </ul>
 
-            <div className={`interpretation-summary ${riskClass}`}>
-              {getInterpretation(result.breakdown, result.risk).conclusion}
+            <div
+              className={`interpretation-summary ${riskClass}`}
+            >
+              {
+                getInterpretation(
+                  result.breakdown,
+                  result.risk
+                ).conclusion
+              }
             </div>
           </div>
         </>
