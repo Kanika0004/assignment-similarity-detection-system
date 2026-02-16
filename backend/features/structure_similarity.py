@@ -1,23 +1,32 @@
 import numpy as np
 import re
 
-def extract_structure(text):
-    sentences = re.split(r'[.!?]', text)
-    return len(sentences), text.count("\n")
+
+def get_sentence_lengths(text):
+    sentences = re.split(r'[.!?]+', text)
+    sentences = [s.strip() for s in sentences if s.strip()]
+    return [len(re.findall(r'\w+', s)) for s in sentences]
+
+
+def pad_sequence(seq, max_len):
+    if len(seq) == 0:
+        return np.zeros(max_len)
+    padded = seq + [0] * (max_len - len(seq))
+    return np.array(padded[:max_len])
+
 
 def structure_similarity(texts):
-    features = [extract_structure(t) for t in texts]
-    n = len(features)
-    sim = np.zeros((n, n))
+    sentence_sequences = [get_sentence_lengths(t) for t in texts]
 
-    for i in range(n):
-        for j in range(n):
-            s1, p1 = features[i]
-            s2, p2 = features[j]
+    max_len = max(len(seq) for seq in sentence_sequences)
+    max_len = max(max_len, 1)
 
-            sent_sim = 1 - abs(s1 - s2) / max(s1, s2, 1)
-            para_sim = 1 - abs(p1 - p2) / max(p1, p2, 1)
+    vectors = np.array([pad_sequence(seq, max_len) for seq in sentence_sequences])
 
-            sim[i][j] = (sent_sim * 0.6 + para_sim * 0.4)
+    # Normalize each vector
+    norms = np.linalg.norm(vectors, axis=1, keepdims=True)
+    norms[norms == 0] = 1
+    vectors = vectors / norms
 
-    return sim
+    similarity = vectors @ vectors.T
+    return similarity

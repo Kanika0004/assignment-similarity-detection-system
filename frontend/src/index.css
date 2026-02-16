@@ -312,3 +312,7 @@ body {
   font-size: 12px;
   font-weight: 500;
 }
+
+.metric-fill.risk-high { background: #dc2626; }   /* red */
+.metric-fill.risk-medium { background: #f59e0b; } /* orange */
+.metric-fill.risk-low { background: #16a34a; }    /* green */

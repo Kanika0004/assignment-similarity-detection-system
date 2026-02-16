@@ -3,9 +3,9 @@ from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List
 
-from .ingestion.docx_reader import read_document
-from .scoring.weighted_score import compute_weighted_similarity
-from .core.database import SessionLocal, SimilarityResult
+from backend.ingestion.docx_reader import read_document
+from backend.scoring.weighted_score import compute_weighted_similarity
+from backend.core.database import SessionLocal, SimilarityResult
 
 
 app = FastAPI(
