@@ -12,6 +12,7 @@ frontend/node_modules/
 # OS
 .DS_Store
 Thumbs.db
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 *.db
@@ -20,3 +21,5 @@ Thumbs.db
 *.db
 backend/storage/*.db
 >>>>>>> 95d31da (Remove database from tracking and update similarity logic)
+=======
+>>>>>>> e8b05ea (Updated similarity weights and fixes)

@@ -1,4 +1,5 @@
-from sentence_transformers import SentenceTransformer, util
+from sentence_transformers import SentenceTransformer
+from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 
 model = SentenceTransformer("all-MiniLM-L6-v2")
@@ -6,36 +7,34 @@ model = SentenceTransformer("all-MiniLM-L6-v2")
 
 def chunk_text(text, chunk_size=400):
     words = text.split()
-    chunks = []
-
-    for i in range(0, len(words), chunk_size):
-        chunk = " ".join(words[i:i + chunk_size])
-        chunks.append(chunk)
-
-    return chunks
+    return [
+        " ".join(words[i:i + chunk_size])
+        for i in range(0, len(words), chunk_size)
+    ]
 
 
 def get_document_embedding(text):
     chunks = chunk_text(text)
 
-    chunk_embeddings = model.encode(
+    embeddings = model.encode(
         chunks,
-        convert_to_tensor=True,
-        batch_size=8
+        convert_to_numpy=True,
+        batch_size=8,
+        normalize_embeddings=True  # IMPORTANT
     )
 
-    return chunk_embeddings.mean(dim=0)
+    return np.mean(embeddings, axis=0)
 
 
 def semantic_similarity(texts):
-    doc_embeddings = []
+    doc_embeddings = np.array([
+        get_document_embedding(text)
+        for text in texts
+    ])
 
-    for text in texts:
-        emb = get_document_embedding(text)
-        doc_embeddings.append(emb)
+    similarity_matrix = cosine_similarity(doc_embeddings)
 
-    doc_embeddings = np.stack([emb.cpu().numpy() for emb in doc_embeddings])
-
-    similarity_matrix = np.matmul(doc_embeddings, doc_embeddings.T)
+    # Clamp to [0,1] safety
+    similarity_matrix = np.clip(similarity_matrix, 0, 1)
 
     return similarity_matrix
