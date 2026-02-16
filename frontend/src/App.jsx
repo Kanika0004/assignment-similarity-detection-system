@@ -10,7 +10,7 @@ export default function App() {
 
   const analyze = async () => {
     if (!file1 || !file2) {
-      alert("Upload both assignments");
+      alert("Please upload both assignments");
       return;
     }
 
@@ -19,25 +19,7 @@ export default function App() {
 
     try {
       const data = await compareAssignments([file1, file2]);
-
-      if (data.warning) {
-        setResult({
-          score: "N/A",
-          risk: "Unreadable (OCR Failed)",
-          type: "warning"
-        });
-      } else {
-        const r = data.comparisons[0];
-        setResult({
-          score: r.similarity + "%",
-          risk: r.risk,
-          type: r.risk.includes("Highly")
-            ? "high"
-            : r.risk.includes("Moderately")
-            ? "medium"
-            : "low"
-        });
-      }
+      setResult(data.comparisons[0]);
     } catch {
       alert("Backend connection failed");
     }
@@ -45,31 +27,148 @@ export default function App() {
     setLoading(false);
   };
 
+  /* -------------------- Helpers -------------------- */
+
+  const riskClass = result?.risk.includes("High")
+    ? "high"
+    : result?.risk.includes("Moderate")
+      ? "medium"
+      : "low";
+
+  const getColorClass = (value) => {
+    if (value >= 80) return "high";
+    if (value >= 50) return "medium";
+    return "low";
+  };
+
+  const getInterpretation = (breakdown, risk) => {
+    const notes = [];
+
+    if (breakdown.stylometry >= 85) {
+      notes.push(
+        "Writing style similarity is very high, suggesting the same author or strong stylistic influence."
+      );
+    }
+
+    if (breakdown.semantic >= 70 && breakdown.semantic > breakdown.content) {
+      notes.push(
+        "Semantic similarity exceeds direct content overlap, indicating paraphrasing rather than copy-paste."
+      );
+    }
+
+    if (breakdown.metadata < 50) {
+      notes.push(
+        "Low metadata similarity reduces the likelihood of direct document reuse."
+      );
+    }
+
+    let conclusion =
+      "Low likelihood of plagiarism. Similarities may be structural or coincidental.";
+
+    if (risk.includes("Moderate")) {
+      conclusion =
+        "Moderate plagiarism risk. Similarities are likely due to paraphrasing or shared source material.";
+    }
+
+    if (risk.includes("High")) {
+      conclusion =
+        "High plagiarism risk. Strong evidence of copied or closely rewritten content.";
+    }
+
+    return { notes, conclusion };
+  };
+
+  /* -------------------- Render -------------------- */
+
   return (
     <div className="page">
+      <h1 className="title">Assignment Similarity Checker</h1>
+
+      {/* Upload Card */}
       <div className="card">
-        <h1>Assignment Similarity Analyzer</h1>
-        <p className="subtitle">
-          Analyze similarity between assignments using AI + OCR
-        </p>
+        <label className="file-label">
+          Assignment 1
+          <input type="file" onChange={(e) => setFile1(e.target.files[0])} />
+        </label>
 
-        <div className="upload-grid">
-          <input type="file" accept="application/pdf" onChange={(e) => setFile1(e.target.files[0])} />
-          <input type="file" accept="application/pdf" onChange={(e) => setFile2(e.target.files[0])} />
-        </div>
+        <label className="file-label">
+          Assignment 2
+          <input type="file" onChange={(e) => setFile2(e.target.files[0])} />
+        </label>
 
-        <button onClick={analyze} disabled={loading}>
-          {loading ? "Analyzing..." : "Analyze Similarity"}
+        <button className="primary-btn" onClick={analyze} disabled={loading}>
+          {loading ? "Analyzing…" : "Compare Assignments"}
         </button>
-
-        {result && (
-          <div className={`result ${result.type}`}>
-            <h2>Result</h2>
-            <p><strong>Similarity Score:</strong> {result.score}</p>
-            <p><strong>Risk Level:</strong> {result.risk}</p>
-          </div>
-        )}
       </div>
+
+      {/* Result Section */}
+      {result && (
+        <>
+          {/* Summary Card */}
+          <div className={`card result-card ${riskClass}`}>
+            <div className="result-header">
+              <div>
+                <div className="score">{result.similarity}%</div>
+                <div className="muted">Overall Similarity</div>
+              </div>
+
+              <span className={`risk-badge ${riskClass}`}>
+                {result.risk}
+              </span>
+            </div>
+
+            <hr />
+
+            {/* Breakdown */}
+            <div className="breakdown-list">
+              {Object.entries(result.breakdown).map(([key, value]) => (
+                <div key={key} className="breakdown-row">
+                  <div className="breakdown-header">
+                    <span className="metric-name">
+                      {key.charAt(0).toUpperCase() + key.slice(1)}
+                    </span>
+                    <span className="metric-percent">{value}%</span>
+                  </div>
+
+                  <div className="metric-line">
+                    <div
+                      className={`metric-fill ${getColorClass(value)}`}
+                      style={{ width: `${value}%` }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Interpretation Card */}
+          <div className="card interpretation-card">
+            <h3 className="interpretation-title">
+              Plagiarism Interpretation
+            </h3>
+
+            <ul className="interpretation-list">
+              {getInterpretation(
+                result.breakdown,
+                result.risk
+              ).notes.map((note, index) => (
+                <li key={index}>{note}</li>
+              ))}
+            </ul>
+
+            <div
+              className={`interpretation-summary ${riskClass}`}
+            >
+              {
+                getInterpretation(
+                  result.breakdown,
+                  result.risk
+                ).conclusion
+              }
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }

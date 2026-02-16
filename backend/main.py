@@ -68,7 +68,7 @@ async def compare_assignments(files: List[UploadFile] = File(...)):
 
     # -------- COMPUTE SIMILARITY --------
     try:
-        similarity_matrix = compute_weighted_similarity(texts, metadata)
+        similarity_matrix, breakdown = compute_weighted_similarity(texts, metadata)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Similarity error: {str(e)}")
 
@@ -95,7 +95,14 @@ async def compare_assignments(files: List[UploadFile] = File(...)):
                     "file1": filenames[i],
                     "file2": filenames[j],
                     "similarity": percentage,
-                    "risk": risk
+                    "risk": risk,
+                    "breakdown": {
+                        "content": round(float(breakdown["content"][i][j]) * 100, 2),
+                        "semantic": round(float(breakdown["semantic"][i][j]) * 100, 2),
+                        "structure": round(float(breakdown["structure"][i][j]) * 100, 2),
+                        "stylometry": round(float(breakdown["stylometry"][i][j]) * 100, 2),
+                        "metadata": round(float(breakdown["metadata"][i][j]) * 100, 2),
+                    }
                 })
 
         db.commit()

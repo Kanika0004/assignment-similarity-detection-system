@@ -24,4 +24,12 @@ def compute_weighted_similarity(texts, metadata):
         metadata_sim * weights["metadata"]
     )
 
-    return final_matrix
+    breakdown = {
+        "content": content_sim,
+        "semantic": semantic_sim,
+        "structure": structure_sim,
+        "stylometry": stylometry_sim,
+        "metadata": metadata_sim
+    }
+
+    return final_matrix, breakdown
