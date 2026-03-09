@@ -23,8 +23,8 @@ import {
   Cell,
 } from "recharts";
 import { mockReports, mockSimilarityPairs, mockClusters } from "../data/mockData";
-//import { SimilarityHeatmap } from "./SimilarityHeatmap";
-//import { NetworkGraph } from "./NetworkGraph";
+import { SimilarityHeatmap } from "./SimilarityHeatmap";
+import { NetworkGraph } from "./NetworkGraph";
 import { useSectionContext } from "../context/SectionContext";
 
 export function DashboardHome() {
@@ -197,11 +197,11 @@ export function DashboardHome() {
         </div>
       </div>
 
-      {/* Heatmap and Network Graph
+      {/* Heatmap and Network Graph */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <SimilarityHeatmap />
         <NetworkGraph />
-      </div> */}
+      </div>
 
       {/* Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

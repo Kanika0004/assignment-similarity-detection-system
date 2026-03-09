@@ -24,7 +24,7 @@ import {
 } from "recharts";
 import { mockReports, mockSimilarityPairs, mockClusters } from "../data/mockData";
 //import { SimilarityHeatmap } from "./SimilarityHeatmap";
-//import { NetworkGraph } from "./NetworkGraph";
+import { NetworkGraph } from "./NetworkGraph";
 import { useSectionContext } from "../context/SectionContext";
 
 export function DashboardHome() {
