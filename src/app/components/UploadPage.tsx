@@ -5,6 +5,7 @@ import { useSectionContext } from "../context/SectionContext";
 
 interface UploadedFile {
   id: string;
+  file: File;
   name: string;
   size: number;
   type: string;
@@ -21,7 +22,7 @@ export function UploadPage() {
   const [dragActive, setDragActive] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
-  
+
   // Advanced detection controls
   const [ignoreBibliography, setIgnoreBibliography] = useState(true);
   const [ignoreQuotes, setIgnoreQuotes] = useState(true);
@@ -29,7 +30,9 @@ export function UploadPage() {
   const [ignoreTemplates, setIgnoreTemplates] = useState(false);
   const [detectAI, setDetectAI] = useState(false);
   const [detectStyleShift, setDetectStyleShift] = useState(false);
-  const [compareWith, setCompareWith] = useState<"current" | "past" | "institutional">("current");
+  const [compareWith, setCompareWith] = useState<
+    "current" | "past" | "institutional"
+  >("current");
 
   const isArchive = selectedSection?.isArchive || false;
 
@@ -63,7 +66,8 @@ export function UploadPage() {
 
   const handleFiles = (fileList: FileList) => {
     const newFiles: UploadedFile[] = Array.from(fileList).map((file) => ({
-      id: Math.random().toString(36).substr(2, 9),
+      id: crypto.randomUUID(),
+      file,
       name: file.name,
       size: file.size,
       type: file.type,
@@ -80,7 +84,7 @@ export function UploadPage() {
     const k = 1024;
     const sizes = ["Bytes", "KB", "MB"];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return Math.round(bytes / Math.pow(k, i) * 100) / 100 + " " + sizes[i];
+    return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + " " + sizes[i];
   };
 
   const handleSubmit = () => {
@@ -115,11 +119,13 @@ export function UploadPage() {
       </div>
 
       {/* Section Context Notice */}
-      <div className={`p-4 rounded-lg border ${
-        isArchive 
-          ? "bg-orange-50 border-orange-200"
-          : "bg-blue-50 border-blue-200"
-      }`}>
+      <div
+        className={`p-4 rounded-lg border ${
+          isArchive
+            ? "bg-orange-50 border-orange-200"
+            : "bg-blue-50 border-blue-200"
+        }`}
+      >
         <p className="text-sm font-medium">
           {isArchive ? (
             <span className="text-orange-800">
@@ -170,9 +176,14 @@ export function UploadPage() {
             {(["low", "medium", "high"] as const).map((level) => (
               <button
                 key={level}
-                onClick={() => setSensitivity(level === "low" ? 70 : level === "medium" ? 50 : 30)}
+                onClick={() =>
+                  setSensitivity(
+                    level === "low" ? 70 : level === "medium" ? 50 : 30,
+                  )
+                }
                 className={`px-4 py-2 rounded-lg border-2 transition-all ${
-                  sensitivity === (level === "low" ? 70 : level === "medium" ? 50 : 30)
+                  sensitivity ===
+                  (level === "low" ? 70 : level === "medium" ? 50 : 30)
                     ? "border-blue-600 bg-blue-50 text-blue-700"
                     : "border-gray-200 text-gray-700 hover:border-gray-300"
                 }`}
@@ -315,7 +326,9 @@ export function UploadPage() {
                 <span className="text-sm font-medium text-gray-900">
                   Ignore Bibliography
                 </span>
-                <p className="text-xs text-gray-500">Exclude reference sections</p>
+                <p className="text-xs text-gray-500">
+                  Exclude reference sections
+                </p>
               </div>
             </label>
 
@@ -330,7 +343,9 @@ export function UploadPage() {
                 <span className="text-sm font-medium text-gray-900">
                   Ignore Quoted Text
                 </span>
-                <p className="text-xs text-gray-500">Exclude direct quotations</p>
+                <p className="text-xs text-gray-500">
+                  Exclude direct quotations
+                </p>
               </div>
             </label>
 
@@ -345,7 +360,9 @@ export function UploadPage() {
                 <span className="text-sm font-medium text-gray-900">
                   Ignore Common Phrases
                 </span>
-                <p className="text-xs text-gray-500">Exclude academic boilerplate</p>
+                <p className="text-xs text-gray-500">
+                  Exclude academic boilerplate
+                </p>
               </div>
             </label>
 
@@ -360,7 +377,9 @@ export function UploadPage() {
                 <span className="text-sm font-medium text-gray-900">
                   Ignore Template Sections
                 </span>
-                <p className="text-xs text-gray-500">Exclude provided templates</p>
+                <p className="text-xs text-gray-500">
+                  Exclude provided templates
+                </p>
               </div>
             </label>
 
@@ -390,7 +409,9 @@ export function UploadPage() {
                 <span className="text-sm font-medium text-gray-900">
                   Detect Style Shifts
                 </span>
-                <p className="text-xs text-gray-500">Flag inconsistent writing</p>
+                <p className="text-xs text-gray-500">
+                  Flag inconsistent writing
+                </p>
               </div>
             </label>
           </div>
