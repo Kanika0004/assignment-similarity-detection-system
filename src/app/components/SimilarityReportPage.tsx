@@ -180,37 +180,6 @@ export function SimilarityReportPage() {
               className="w-full"
             />
           </div>
-
-          {/* Toggle Options */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Advanced Options
-            </label>
-            <div className="space-y-2">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={ignoreCommon}
-                  onChange={(e) => setIgnoreCommon(e.target.checked)}
-                  className="w-4 h-4 text-blue-600"
-                />
-                <span className="text-sm text-gray-700">
-                  Ignore common phrases
-                </span>
-              </label>
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={ignoreRefs}
-                  onChange={(e) => setIgnoreRefs(e.target.checked)}
-                  className="w-4 h-4 text-blue-600"
-                />
-                <span className="text-sm text-gray-700">
-                  Ignore references
-                </span>
-              </label>
-            </div>
-          </div>
         </div>
       </div>
 
